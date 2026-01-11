@@ -1,36 +1,36 @@
 """
-ç®åæµè¯èæ¬ï¼éªè¯AIæºå¨äººçåºæ¬åè½
+简单测试脚本，验证AI机器人的基本功能
 """
 
 from simple_neural_ai_robot import SimpleNeuralAIBot
 
 def test_basic_functionality():
-    print("æµè¯AIæºå¨äººçåºæ¬åè½...")
+    print("测试AI机器人的基本功能...")
     
-    # åå»ºæºå¨äººå®ä¾
+    # 创建机器人实例
     bot = SimpleNeuralAIBot()
     
-    # æµè¯å¯¹è¯åè½
-    print("\n1. æµè¯å¯¹è¯åè½:")
-    response = bot.chat("ä½ å¥½ï¼è¿æ¯ä¸ä¸ªæµè¯")
+    # 测试对话功能
+    print("\n1. 测试对话功能:")
+    response = bot.chat("你好，这是一个测试")
     print(response)
     
-    # æµè¯æç´¢åè½
-    print("\n2. æµè¯æç´¢åè½:")
-    response = bot.chat("è¯·æç´¢äººå·¥æºè½çä¿¡æ¯")
+    # 测试搜索功能
+    print("\n2. 测试搜索功能:")
+    response = bot.chat("请搜索人工智能的信息")
     print(response)
     
-    # æµè¯å³ç­åè½
-    print("\n3. æµè¯å³ç­åè½:")
-    response = bot.chat("æåºè¯¥éæ©åªä¸ªæ·±åº¦å­¦ä¹ æ¡æ¶ï¼")
+    # 测试决策功能
+    print("\n3. 测试决策功能:")
+    response = bot.chat("我应该选择哪个深度学习框架？")
     print(response)
     
-    # æµè¯æä»¤æ§è¡åè½
-    print("\n4. æµè¯æä»¤æ§è¡åè½:")
-    response = bot.chat("åæéæ±å¼åä¸ä¸ªèå¤©æºå¨äºº")
+    # 测试指令执行功能
+    print("\n4. 测试指令执行功能:")
+    response = bot.chat("分析需求开发一个聊天机器人")
     print(response)
     
-    print("\nææåºæ¬åè½æµè¯å®æï¼")
+    print("\n所有基本功能测试完成！")
 
 if __name__ == "__main__":
     test_basic_functionality()

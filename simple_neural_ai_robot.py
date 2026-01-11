@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
 """
-ç®åçæ·±åº¦å­¦ä¹ ç¥ç»ç½ç»æºè½AIæºå¨äºº
-æ­¤çæ¬ä¸ä¾èµå¤é¨åºå¦torchãtransformersï¼å¯å¨åºæ¬ç¯å¢ä¸­è¿è¡
-åå«å¯¹è¯ç®¡çãæ°æ®ææä¸åæãå³ç­æ¯æãèªæä¼ååç¨æ·æä»¤æ§è¡æ¨¡å
+深度学习神经网络智能AI机器人
+包含对话管理、数据挖掘与分析、决策支持、自我优化和用户指令执行模块
 """
 
 import numpy as np
@@ -18,7 +18,7 @@ import random
 
 class SimpleNeuralNetwork:
     """
-    ç®åçç¥ç»ç½ç»æ¨¡åï¼ä½¿ç¨numpyå®ç°ï¼
+    简化的神经网络模型（使用numpy实现）
     """
     def __init__(self, input_size=100, hidden_size=64, output_size=100, num_layers=2):
         self.input_size = input_size
@@ -26,42 +26,42 @@ class SimpleNeuralNetwork:
         self.output_size = output_size
         self.num_layers = num_layers
         
-        # åå§åæéååç½®
+        # 初始化权重和偏置
         self.weights = []
         self.biases = []
         
-        # è¾å¥å±å°éèå±
+        # 输入层到隐藏层
         self.weights.append(np.random.randn(input_size, hidden_size) * 0.1)
         self.biases.append(np.random.randn(hidden_size) * 0.1)
         
-        # éèå±å°éèå±
+        # 隐藏层到隐藏层
         for _ in range(num_layers - 1):
             self.weights.append(np.random.randn(hidden_size, hidden_size) * 0.1)
             self.biases.append(np.random.randn(hidden_size) * 0.1)
         
-        # éèå±å°è¾åºå±
+        # 隐藏层到输出层
         self.weights.append(np.random.randn(hidden_size, output_size) * 0.1)
         self.biases.append(np.random.randn(output_size) * 0.1)
     
     def sigmoid(self, x):
-        """æ¿æ´»å½æ°"""
+        """激活函数"""
         return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
     
     def forward(self, x):
-        """ååä¼ æ­"""
-        # å°è¾å¥è½¬æ¢ä¸ºåé
+        """前向传播"""
+        # 将输入转换为向量
         if isinstance(x, (int, float)):
             x = np.array([x])
         elif isinstance(x, list):
             x = np.array(x)
         elif isinstance(x, str):
-            # å°å­ç¬¦ä¸²è½¬æ¢ä¸ºæ°å¼åéï¼ç®åå¤çï¼
+            # 将字符串转换为数值向量（简化处理）
             x = np.array([hash(x) % 1000 / 1000.0 for _ in range(self.input_size)])
         
-        # éå±è®¡ç®
+        # 逐层计算
         for i, (weight, bias) in enumerate(zip(self.weights, self.biases)):
             x = np.dot(x, weight) + bias
-            if i < len(self.weights) - 1:  # æåä¸å±ä¸ç¨æ¿æ´»å½æ°
+            if i < len(self.weights) - 1:  # 最后一层不用激活函数
                 x = self.sigmoid(x)
         
         return x
@@ -69,42 +69,42 @@ class SimpleNeuralNetwork:
 
 class SimpleConversationManager:
     """
-    ç®åçå¯¹è¯ç®¡çæ¨¡å
+    简化版对话管理模块
     """
     def __init__(self):
         self.neural_net = SimpleNeuralNetwork()
-        self.word_embeddings = {}  # ç®åçè¯åµå¥å­å¨
+        self.word_embeddings = {}  # 简单的词嵌入存储
         self.response_templates = [
-            "æçè§£æ¨è¯´çå³äº '{}' çåå®¹ã",
-            "å³äº {}, æè®¤ä¸ºè¿æ¯ä¸ä¸ªå¾éè¦çé®é¢ã",
-            "æå·²ç»è®°å½äºæ¨æå°ç {} ä¿¡æ¯ã",
-            "è¿æ¯ä¸ä¸ªæè¶£çè§ç¹ï¼æä»¬å¯ä»¥è¿ä¸æ­¥æ¢è®¨ {}ã",
-            "å³äº {}, ææä¸äºæ³æ³æ³åæ¨åäº«ã",
-            "æ¨æå°ç {} ç¡®å®å¼å¾æ·±å¥è®¨è®ºã",
-            "ææç½äºï¼{} æ¯æ¨å³æ³¨çéç¹ã",
-            "å¾æè¶£ï¼{} è¿ä¸ªè¯é¢æå¾ä¹æåæ¨äº¤æµã"
+            "我理解您说的关于 '{}' 的内容。",
+            "关于 {}，我认为这是一个很重要的问题。",
+            "我已经记录了您提到的 {} 信息。",
+            "这是一个有趣的观点，我们可以进一步探讨 {}。",
+            "关于 {}，我有一些想法想和您分享。",
+            "您提到的 {} 确实值得深入讨论。",
+            "明白了，{} 是您关注的重点。",
+            "很有趣，{} 这个话题我很乐意和您交流。"
         ]
     
     def encode_text(self, text: str) -> np.ndarray:
-        """ç®åææ¬ç¼ç ï¼ä½¿ç¨åå¸åå­ç¬¦ç»è®¡ï¼"""
-        # ä½¿ç¨åå¸å¼åå»ºåºå®é¿åº¦çåé
+        """简单文本编码（使用哈希和字符统计）"""
+        # 使用哈希值创建固定长度的向量
         vector = np.zeros(100)
-        for i, char in enumerate(text[:50]):  # åªèèå50ä¸ªå­ç¬¦
+        for i, char in enumerate(text[:50]):  # 只考虑前50个字符
             vector[i % 100] += ord(char) / 1000.0
         
-        # æ·»å è¯é¢ä¿¡æ¯
+        # 添加词频信息
         words = text.split()
-        for i, word in enumerate(words[:20]):  # åªèèå20ä¸ªè¯
+        for i, word in enumerate(words[:20]):  # 只考虑前20个词
             vector[(i + 50) % 100] += hash(word) % 1000 / 1000.0
         
         return vector
     
     def generate_response(self, user_input: str) -> str:
-        """çæå¯¹è¯ååº"""
+        """生成对话响应"""
         encoded_input = self.encode_text(user_input)
         output = self.neural_net.forward(encoded_input)
         
-        # åºäºè¾åºéæ©ååºæ¨¡æ¿
+        # 基于输出选择响应模板
         template_idx = int(abs(output[0] * 100)) % len(self.response_templates)
         short_input = user_input[:20] if len(user_input) > 20 else user_input
         
@@ -113,22 +113,22 @@ class SimpleConversationManager:
 
 class SimpleDataMiner:
     """
-    ç®åçæ°æ®ææä¸åææ¨¡å
+    简化版数据挖掘与分析模块
     """
     def __init__(self):
         self.search_history = []
     
     def search_web(self, query: str, max_results: int = 5) -> List[Dict[str, str]]:
-        """æ¨¡æç½ç»æç´¢"""
-        print(f"æ­£å¨æç´¢: {query}")
+        """模拟网络搜索"""
+        print(f"正在搜索: {query}")
         
-        # æ¨¡ææç´¢ç»æ
+        # 模拟搜索结果
         results = []
         for i in range(max_results):
             results.append({
-                'title': f'æç´¢ç»æ {i+1} å³äº {query}',
+                'title': f'搜索结果 {i+1} 关于 {query}',
                 'url': f'https://example.com/result{i+1}',
-                'snippet': f'è¿æ¯å³äº{query}çç¸å³ä¿¡æ¯åæ°æ®æè¦ï¼åå«éè¦ç¥è¯ç¹ååèä»·å¼ã',
+                'snippet': f'这是关于{query}的相关信息和数据摘要，包含重要知识点和参考价值。',
                 'timestamp': datetime.now().isoformat()
             })
         
@@ -141,9 +141,9 @@ class SimpleDataMiner:
         return results
     
     def analyze_data(self, data: List[Dict]) -> Dict[str, Any]:
-        """ä½¿ç¨pandasåææ°æ®"""
+        """使用pandas分析数据"""
         if not data:
-            return {'error': 'æ²¡ææ°æ®å¯ä¾åæ'}
+            return {'error': '没有数据可供分析'}
         
         df = pd.DataFrame(data)
         
@@ -155,22 +155,22 @@ class SimpleDataMiner:
             'has_numeric_columns': len(df.select_dtypes(include=[np.number]).columns) > 0
         }
         
-        # æ°å¼åçç»è®¡ä¿¡æ¯
+        # 数值列的统计信息
         numeric_cols = df.select_dtypes(include=[np.number]).columns
         if len(numeric_cols) > 0:
             try:
                 analysis_result['statistics'] = df[numeric_cols].describe().to_dict()
             except:
-                analysis_result['statistics'] = "æ æ³è®¡ç®ç»è®¡æ°æ®"
+                analysis_result['statistics'] = "无法计算统计数据"
         else:
-            analysis_result['statistics'] = "æ æ°å¼åå¯åæ"
+            analysis_result['statistics'] = "无数值列可分析"
         
         return analysis_result
 
 
 class SimpleDecisionModule:
     """
-    ç®åçå³ç­æ¯ææ¨¡å
+    简化版决策支持模块
     """
     def __init__(self):
         self.models_trained = False
@@ -183,19 +183,18 @@ class SimpleDecisionModule:
         }
     
     def make_decision(self, features: List[float]) -> Dict[str, Any]:
-        """åºäºè¾å¥ç¹å¾ååºå³ç­"""
-        # ç®åçå³ç­é»è¾
+        """基于输入特征做出决策"""
         if not features:
             features = [random.random() for _ in range(5)]
         
-        # åºäºç¹å¾çå æè®¡ç®
+        # 基于特征的加权计算
         weighted_sum = sum(f * (i+1) for i, f in enumerate(features))
         
-        # çæå¤ä¸ªæ¨¡åçé¢æµ
+        # 生成多个模型的预测
         dt_prediction = int(weighted_sum * 10) % 3
         rf_prediction = int(sum(features) * 7) % 3
         
-        # è®¡ç®ç½®ä¿¡åº¦
+        # 计算置信度
         confidence_values = [random.random() for _ in range(3)]
         total_confidence = sum(confidence_values)
         normalized_confidence = [c/total_confidence for c in confidence_values] if total_confidence > 0 else [1/3]*3
@@ -209,21 +208,21 @@ class SimpleDecisionModule:
         }
     
     def _get_recommendation(self, features: List[float]) -> str:
-        """åºäºç¹å¾çææ¨è"""
+        """基于特征生成推荐"""
         if len(features) >= 3:
             if features[0] > 0.5:
-                return "æ¨èä½¿ç¨æ·±åº¦å­¦ä¹ æ¹æ³"
+                return "推荐使用深度学习方法"
             elif features[1] > 0.5:
-                return "æ¨èä½¿ç¨ä¼ ç»æºå¨å­¦ä¹ æ¹æ³"
+                return "推荐使用传统机器学习方法"
             else:
-                return "æ¨èåè¿è¡æ°æ®æ¢ç´¢"
+                return "推荐先进性数据探测"
         else:
-            return "éè¦æ´å¤ä¿¡æ¯æ¥æä¾æ¨è"
+            return "需要更多信息来提供建议"
 
 
 class SimpleSelfOptimizer:
     """
-    ç®åçèªæä¼åæ¨¡å
+    简化版自我优化模块
     """
     def __init__(self, neural_network: SimpleNeuralNetwork):
         self.neural_network = neural_network
@@ -232,27 +231,27 @@ class SimpleSelfOptimizer:
         self.iteration_count = 0
     
     def compute_loss(self, predicted: np.ndarray, target: np.ndarray) -> float:
-        """è®¡ç®æå¤±å½æ°ï¼åæ¹è¯¯å·®ï¼"""
+        """计算损失函数（均方误差）"""
         return np.mean((predicted - target) ** 2)
     
     def backpropagate(self, input_vector: np.ndarray, target_vector: np.ndarray):
-        """ç®åçååä¼ æ­"""
-        # å½åé¢æµ
+        """简化版反向传播"""
+        # 当前预测
         predicted = self.neural_network.forward(input_vector.copy())
         
-        # è®¡ç®æå¤±
+        # 计算损失
         loss = self.compute_loss(predicted, target_vector)
         
-        # ç®åçæ¢¯åº¦æ´æ°ï¼çå®åºæ¯ä¸­éè¦æ´å¤æçååä¼ æ­ï¼
+        # 简单的梯度更新（真实场景中需要更复杂的反向传播）
         for i in range(len(self.neural_network.weights)):
-            # éæºæ°å¨æé
+            # 随机扰动权重
             weight_perturbation = np.random.randn(*self.neural_network.weights[i].shape) * self.learning_rate * 0.1
             bias_perturbation = np.random.randn(*self.neural_network.biases[i].shape) * self.learning_rate * 0.1
             
             self.neural_network.weights[i] -= weight_perturbation
             self.neural_network.biases[i] -= bias_perturbation
         
-        # è®°å½è®­ç»åå²
+        # 记录训练历史
         self.iteration_count += 1
         self.training_history.append({
             'iteration': self.iteration_count,
@@ -263,7 +262,7 @@ class SimpleSelfOptimizer:
         return loss
     
     def optimize(self, training_data: List[Tuple[np.ndarray, np.ndarray]], epochs: int = 5):
-        """æ§è¡ä¼åè¿ç¨"""
+        """执行优化过程"""
         total_loss = 0
         for epoch in range(epochs):
             epoch_loss = 0
@@ -280,14 +279,14 @@ class SimpleSelfOptimizer:
 
 class SimpleInstructionExecutor:
     """
-    ç®åçç¨æ·æä»¤æ§è¡æ¨¡å
+    简化版用户指令执行模块
     """
     def __init__(self):
         self.task_queue = []
         self.completed_tasks = []
     
     def analyze_requirements(self, requirements: str) -> Dict[str, Any]:
-        """éæ±åæ"""
+        """需求分析"""
         analysis = {
             'requirements': requirements,
             'complexity': self._assess_complexity(requirements),
@@ -299,8 +298,8 @@ class SimpleInstructionExecutor:
         return analysis
     
     def design_architecture(self, requirements_analysis: Dict) -> Dict[str, Any]:
-        """æ¶æè®¾è®¡"""
-        # æ ¹æ®éæ±å¤æåº¦éæ©æ¶ææ¨¡å¼
+        """架构设计"""
+        # 根据需求复杂度选择架构模式
         if requirements_analysis['complexity'] == 'High':
             patterns = ['Microservices', 'Event-Driven', 'CQRS']
         elif requirements_analysis['complexity'] == 'Medium':
@@ -322,7 +321,7 @@ class SimpleInstructionExecutor:
         return architecture
     
     def implement_technology(self, architecture: Dict) -> Dict[str, Any]:
-        """ææ¯å®ç°è§å"""
+        """技术实现规划"""
         implementation = {
             'implementation_phases': [
                 {'phase': 'Phase 1: Environment Setup', 'duration': '1 week', 'tasks': ['Install dependencies', 'Set up environment']},
@@ -337,7 +336,7 @@ class SimpleInstructionExecutor:
         return implementation
     
     def develop_project(self, implementation_plan: Dict) -> Dict[str, Any]:
-        """é¡¹ç®å¼åç®¡ç"""
+        """项目开发管理"""
         development = {
             'project_status': 'Planning',
             'development_phases': implementation_plan['implementation_phases'],
@@ -349,7 +348,7 @@ class SimpleInstructionExecutor:
         return development
     
     def deploy_publish(self, development_status: Dict) -> Dict[str, Any]:
-        """é¨ç½²åå¸è®¡å"""
+        """部署发布计划"""
         deployment = {
             'environment_setup': ['Staging server', 'Production server', 'Database servers'],
             'deployment_steps': [
@@ -365,7 +364,7 @@ class SimpleInstructionExecutor:
         return deployment
     
     def setup_ci_cd(self, deployment_config: Dict) -> Dict[str, Any]:
-        """CI/CDæµç¨è®¾ç½®"""
+        """CI/CD流程设置"""
         ci_cd = {
             'source_control': 'Git with feature branch workflow',
             'build_process': ['Code compilation', 'Dependency installation', 'Static analysis'],
@@ -376,7 +375,7 @@ class SimpleInstructionExecutor:
         return ci_cd
     
     def _assess_complexity(self, req: str) -> str:
-        """è¯ä¼°å¤æåº¦"""
+        """评估复杂度"""
         word_count = len(req.split())
         if word_count < 50:
             return 'Low'
@@ -386,7 +385,7 @@ class SimpleInstructionExecutor:
             return 'High'
     
     def _identify_components(self, req: str) -> List[str]:
-        """è¯å«ç»ä»¶"""
+        """识别组件"""
         req_lower = req.lower()
         components = []
         
@@ -404,7 +403,7 @@ class SimpleInstructionExecutor:
         return components if components else ['Core System']
     
     def _estimate_time(self, req: str) -> str:
-        """ä¼°ç®æ¶é´"""
+        """估算时间"""
         complexity = self._assess_complexity(req)
         if complexity == 'Low':
             return '1-2 weeks'
@@ -414,7 +413,7 @@ class SimpleInstructionExecutor:
             return '2-3 months'
     
     def _identify_risks(self, req: str) -> List[str]:
-        """è¯å«é£é©"""
+        """识别风险"""
         req_lower = req.lower()
         risks = []
         
@@ -428,7 +427,7 @@ class SimpleInstructionExecutor:
         return risks if risks else ['General Project Risks']
     
     def _assign_priority(self, req: str) -> str:
-        """åéä¼åçº§"""
+        """分配优先级"""
         if 'urgent' in req.lower() or 'asap' in req.lower() or 'immediate' in req.lower():
             return 'High'
         elif 'important' in req.lower():
@@ -437,7 +436,7 @@ class SimpleInstructionExecutor:
             return 'Medium'
     
     def _suggest_technologies(self, components: List[str]) -> List[str]:
-        """æ¨èææ¯æ """
+        """推荐技术栈"""
         technologies = []
         
         if 'Web Frontend' in components:
@@ -457,28 +456,28 @@ class SimpleInstructionExecutor:
         return technologies
     
     def _select_frontend(self, analysis: Dict) -> str:
-        """éæ©åç«¯ææ¯"""
+        """选择前端技术"""
         if 'Mobile Application' in analysis['components']:
             return 'React Native or Flutter'
         else:
             return 'React with TypeScript'
     
     def _select_backend(self, analysis: Dict) -> str:
-        """éæ©åç«¯ææ¯"""
+        """选择后端技术"""
         if 'AI/ML Module' in analysis['components']:
             return 'Python with FastAPI'
         else:
             return 'Node.js with Express or Python with Django'
     
     def _select_database(self, analysis: Dict) -> str:
-        """éæ©æ°æ®åº"""
+        """选择数据库"""
         if 'AI/ML Module' in analysis['components']:
             return 'PostgreSQL with Redis cache'
         else:
             return 'PostgreSQL or MongoDB'
     
     def _select_deployment(self, complexity: str) -> str:
-        """éæ©é¨ç½²ç­ç¥"""
+        """选择部署策略"""
         if complexity == 'High':
             return 'Microservices with Kubernetes'
         elif complexity == 'Medium':
@@ -489,12 +488,12 @@ class SimpleInstructionExecutor:
 
 class SimpleNeuralAIBot:
     """
-    ç®åçä¸»AIæºå¨äººç±»ï¼æ´åæææ¨¡å
+    简化版主AI机器人类，整合所有模块
     """
     def __init__(self):
-        print("æ­£å¨åå§åç®åçæ·±åº¦å­¦ä¹ ç¥ç»ç½ç»æºè½AIæºå¨äºº...")
+        print("正在初始化简化版深度学习神经网络智能AI机器人...")
         
-        # åå§ååæ¨¡å
+        # 初始化各模块
         self.conversation_manager = SimpleConversationManager()
         self.data_miner = SimpleDataMiner()
         self.decision_module = SimpleDecisionModule()
@@ -502,16 +501,16 @@ class SimpleNeuralAIBot:
         self.self_optimizer = SimpleSelfOptimizer(self.neural_network)
         self.instruction_executor = SimpleInstructionExecutor()
         
-        print("ç®åçAIæºå¨äººåå§åå®æï¼")
+        print("简化版AI机器人初始化完成！")
     
     def process_user_request(self, user_input: str) -> Dict[str, Any]:
-        """å¤çç¨æ·è¯·æ±çä¸»å½æ°"""
+        """处理用户请求的主函数"""
         start_time = time.time()
         
-        # 1. å¯¹è¯ç®¡ç
+        # 1. 对话管理
         conversation_response = self.conversation_manager.generate_response(user_input)
         
-        # 2. å¦æç¨æ·è¯·æ±æç´¢æåæï¼æ§è¡æ°æ®ææ
+        # 2. 如果用户请求搜索或分析，执行数据挖掘
         search_keywords = self._extract_search_keywords(user_input)
         search_results = []
         analysis_results = {}
@@ -520,19 +519,19 @@ class SimpleNeuralAIBot:
             search_results = self.data_miner.search_web(' '.join(search_keywords))
             analysis_results = self.data_miner.analyze_data(search_results)
         
-        # 3. å³ç­æ¯æï¼å¦æéè¦ï¼
+        # 3. 决策支持（如果需要）
         decision_result = None
-        if any(word in user_input.lower() for word in ['å³å®', 'å³ç­', 'éæ©', 'æ¨è', 'åºè¯¥', 'åªä¸ª']):
-            # åå»ºæ¨¡æç¹å¾ç¨äºå³ç­
+        if any(word in user_input.lower() for word in ['决定', '决策', '选择', '推荐', '应该', '哪个']):
+            # 创建模拟特征用于决策
             mock_features = [random.random() for _ in range(5)]
             decision_result = self.decision_module.make_decision(mock_features)
         
-        # 4. æ§è¡ç¨æ·æä»¤ï¼å¦æåå«ç¹å®å½ä»¤ï¼
+        # 4. 执行用户指令（如果包含特定命令）
         instruction_result = None
-        if any(cmd in user_input.lower() for cmd in ['åæéæ±', 'è®¾è®¡æ¶æ', 'å®æ½ææ¯', 'å¼åé¡¹ç®', 'é¨ç½²åå¸', 'ci/cd', 'éæ±åæ', 'æ¶æè®¾è®¡']):
+        if any(cmd in user_input.lower() for cmd in ['分析需求', '设计架构', '实施技术', '开发项目', '部署发布', 'ci/cd', '需求分析', '架构设计']):
             instruction_result = self._execute_user_instruction(user_input)
         
-        # 5. èªæä¼åï¼æ¨¡æï¼
+        # 5. 自我优化（模拟）
         if len(self.self_optimizer.training_history) % 5 == 0 and len(self.self_optimizer.training_history) > 0:
             self._perform_self_optimization(user_input)
         
@@ -549,42 +548,42 @@ class SimpleNeuralAIBot:
         }
     
     def _extract_search_keywords(self, text: str) -> List[str]:
-        """æåæç´¢å³é®è¯"""
-        # ç®åçå³é®è¯æåé»è¾
+        """提取搜索关键词"""
+        # 简单的关键词提取逻辑
         keywords = []
         text_lower = text.lower()
         
-        # æ¥æ¾ç¹å®æ¨¡å¼çå³é®è¯
-        search_indicators = ['æç´¢', 'æ¥æ¾', 'æ¥è¯¢', 'äºè§£', 'ä»ä¹æ¯', 'æä¹', 'å¦ä½', 'ææ°', 'æ°é»', 'ä¿¡æ¯', 'find', 'search', 'look up', 'tell me about']
+        # 查找特定模式的关键词
+        search_indicators = ['搜索', '查找', '查询', '了解', '是什么', '怎么', '如何', '最新', '新闻', '信息', 'find', 'search', 'look up', 'tell me about']
         if any(indicator in text_lower for indicator in search_indicators):
-            # æååè¯æ§ç­è¯­ä½ä¸ºå³é®è¯
-            words = re.findall(r'[a-zA-Z一-鿿]+', text)
-            keywords = [word for word in words if len(word) > 1]  # è¿æ»¤æåå­ç¬¦
+            # 提取名词性短语作为关键词
+            words = re.findall(r'[a-zA-Z一-龯]+', text)
+            keywords = [word for word in words if len(word) > 1]  # 过滤掉单字符
         
-        return keywords[:5]  # è¿åå5ä¸ªå³é®è¯
+        return keywords[:5]  # 返回前5个关键词
     
     def _execute_user_instruction(self, instruction: str) -> Dict[str, Any]:
-        """æ§è¡ç¨æ·æä»¤"""
+        """执行用户指令"""
         instruction_lower = instruction.lower()
         
-        if any(keyword in instruction_lower for keyword in ['åæéæ±', 'éæ±åæ']):
+        if any(keyword in instruction_lower for keyword in ['分析需求', '需求分析']):
             return self.instruction_executor.analyze_requirements(instruction)
-        elif any(keyword in instruction_lower for keyword in ['è®¾è®¡æ¶æ', 'æ¶æè®¾è®¡']):
+        elif any(keyword in instruction_lower for keyword in ['设计架构', '架构设计']):
             req_analysis = self.instruction_executor.analyze_requirements(instruction)
             return self.instruction_executor.design_architecture(req_analysis)
-        elif any(keyword in instruction_lower for keyword in ['å®æ½ææ¯', 'ææ¯å®ç°']):
+        elif any(keyword in instruction_lower for keyword in ['实施技术', '技术实现']):
             arch = self.instruction_executor.design_architecture(
                 self.instruction_executor.analyze_requirements(instruction)
             )
             return self.instruction_executor.implement_technology(arch)
-        elif any(keyword in instruction_lower for keyword in ['å¼åé¡¹ç®', 'é¡¹ç®å¼å']):
+        elif any(keyword in instruction_lower for keyword in ['开发项目', '项目开发']):
             impl = self.instruction_executor.implement_technology(
                 self.instruction_executor.design_architecture(
                     self.instruction_executor.analyze_requirements(instruction)
                 )
             )
             return self.instruction_executor.develop_project(impl)
-        elif any(keyword in instruction_lower for keyword in ['é¨ç½²åå¸', 'åå¸é¨ç½²']):
+        elif any(keyword in instruction_lower for keyword in ['部署发布', '发布部署']):
             dev_status = self.instruction_executor.develop_project(
                 self.instruction_executor.implement_technology(
                     self.instruction_executor.design_architecture(
@@ -593,7 +592,7 @@ class SimpleNeuralAIBot:
                 )
             )
             return self.instruction_executor.deploy_publish(dev_status)
-        elif any(keyword in instruction_lower for keyword in ['ci/cd', 'æç»­éæ', 'é¨ç½²æµç¨']):
+        elif any(keyword in instruction_lower for keyword in ['ci/cd', '持续集成', '部署流程']):
             deploy_config = self.instruction_executor.deploy_publish(
                 self.instruction_executor.develop_project(
                     self.instruction_executor.implement_technology(
@@ -605,96 +604,96 @@ class SimpleNeuralAIBot:
             )
             return self.instruction_executor.setup_ci_cd(deploy_config)
         else:
-            # å¦ææ æ³è¯å«å·ä½æä»¤ï¼åå°è¯éæ±åæ
+            # 如果无法识别具体指令，则尝试需求分析
             return self.instruction_executor.analyze_requirements(instruction)
     
     def _perform_self_optimization(self, input_text: str):
-        """æ§è¡èªæä¼å"""
+        """执行自我优化"""
         try:
-            # ä½¿ç¨è¾å¥åå»ºè®­ç»æ°æ®
+            # 使用输入创建训练数据
             input_vector = self.conversation_manager.encode_text(input_text)
-            target_vector = input_vector.copy()  # ä½¿ç¨èªèº«ä½ä¸ºç®æ ï¼èªçç£å­¦ä¹ ï¼
+            target_vector = input_vector.copy()  # 使用自身作为目标（自监督学习）
             
-            # åå»ºè®­ç»æ¹æ¬¡
+            # 创建训练批次
             training_data = [(input_vector, target_vector)]
             
-            # æ§è¡ä¼å
+            # 执行优化
             avg_loss = self.self_optimizer.optimize(training_data, epochs=1)
-            print(f"èªæä¼åå®æï¼å¹³åæå¤±: {avg_loss:.4f}")
+            print(f"自我优化完成，平均损失: {avg_loss:.4f}")
         except Exception as e:
-            print(f"èªæä¼åè¿ç¨ä¸­åºç°éè¯¯: {str(e)}")
+            print(f"自我优化过程中出现错误: {str(e)}")
     
     def chat(self, user_input: str) -> str:
-        """ç®åçèå¤©æ¥å£"""
+        """简单的聊天接口"""
         result = self.process_user_request(user_input)
         
         response_parts = []
         
-        # æ·»å å¯¹è¯ååº
-        response_parts.append(f"ð¤ {result['conversation_response']}")
+        # 添加对话响应
+        response_parts.append(f"🤖 {result['conversation_response']}")
         
-        # æ·»å æç´¢ç»æï¼å¦ææï¼
+        # 添加搜索结果（如果有）
         if result['search_results']:
-            response_parts.append(f"ð æç´¢å° {len(result['search_results'])} æ¡ç¸å³ä¿¡æ¯:")
-            for i, res in enumerate(result['search_results'][:3]):  # åªæ¾ç¤ºå3æ¡
+            response_parts.append(f"🔍 搜索到 {len(result['search_results'])} 条相关信息:")
+            for i, res in enumerate(result['search_results'][:3]):  # 只显示前3条
                 response_parts.append(f"  {i+1}. {res['title']}")
         
-        # æ·»å åæç»ææè¦
+        # 添加分析结果摘要
         if result['analysis_results'] and 'error' not in result['analysis_results']:
-            response_parts.append(f"ð æ°æ®åæ: å±å¤ç {result['analysis_results']['total_records']} æ¡è®°å½")
+            response_parts.append(f"📊 数据分析: 共处理 {result['analysis_results']['total_records']} 条记录")
         
-        # æ·»å å³ç­ç»æï¼å¦ææï¼
+        # 添加决策结果（如果有）
         if result['decision_result']:
-            response_parts.append(f"ð§  å³ç­å»ºè®®: {result['decision_result']['recommendation']}")
+            response_parts.append(f"🧠 决策建议: {result['decision_result']['recommendation']}")
         
-        # æ·»å æä»¤æ§è¡ç»æï¼å¦ææï¼
+        # 添加指令执行结果（如果有）
         if result['instruction_result']:
-            response_parts.append("ð æä»¤æ§è¡ç»æ:")
-            for key, value in list(result['instruction_result'].items())[:3]:  # åªæ¾ç¤ºå3ä¸ªé¡¹ç®
+            response_parts.append("📋 指令执行结果:")
+            for key, value in list(result['instruction_result'].items())[:3]:  # 只显示前3个项目
                 if isinstance(value, (str, int, float)):
                     response_parts.append(f"  {key}: {value}")
                 elif isinstance(value, list) and value:
-                    response_parts.append(f"  {key}: {str(value[:3])}")  # åªæ¾ç¤ºå3ä¸ªåç´ 
+                    response_parts.append(f"  {key}: {str(value[:3])}")  # 只显示前3个元素
         
-        response_parts.append(f"â±ï¸ ååºæ¶é´: {result['response_time']:.2f}ç§")
-        response_parts.append(f"ð ä¼åæ¬¡æ°: {result['optimization_status']}")
+        response_parts.append(f"⏱️ 响应时间: {result['response_time']:.2f}秒")
+        response_parts.append(f"🔄 优化次数: {result['optimization_status']}")
         
         return "\n".join(response_parts)
 
 
 def main():
-    """ä¸»å½æ° - æºå¨äººæ¼ç¤º"""
+    """主函数 - 机器人演示"""
     print("="*60)
-    print("ç®åçæ·±åº¦å­¦ä¹ ç¥ç»ç½ç»æºè½AIæºå¨äºº")
-    print("æ¯æå¯¹è¯ãæç´¢ãåæãå³ç­åæä»¤æ§è¡")
-    print("è¾å¥ 'quit' æ 'exit' éåºç¨åº")
+    print("简化版深度学习神经网络智能AI机器人")
+    print("支持对话、搜索、分析、决策和指令执行")
+    print("输入 'quit' 或 'exit' 退出程序")
     print("="*60)
     
-    # åå»ºæºå¨äººå®ä¾
+    # 创建机器人实例
     ai_bot = SimpleNeuralAIBot()
     
-    # ç¤ºä¾äº¤äº
+    # 示例交互
     print("\n🤖 您好！我是简化版深度学习神经网络智能AI机器人，我可以帮助您对话、搜索信息、分析数据、做决策等。")
-    print("æ¨å¯ä»¥é®æä»»ä½é®é¢ï¼æ¯å¦ï¼")
-    print("- 'ä½ å¥½ï¼ä»ç»ä¸ä¸ä½ èªå·±'")
-    print("- 'å¸®æåæä¸ä¸äººå·¥æºè½çåå±è¶å¿'") 
-    print("- 'æ¨èä¸ä¸ªå¥½çæºå¨å­¦ä¹ é¡¹ç®æ¶æ'")
-    print("- 'æç´¢ææ°çPyTorchæç¨'")
-    print("- 'åæéæ±å¼åä¸ä¸ªèå¤©æºå¨äºº'")
+    print("您可以问我任何问题，比如：")
+    print("- '你好，介绍一下你自己'")
+    print("- '帮我分析一下人工智能的发展趋势'") 
+    print("- '推荐一个好的机器学习项目架构'")
+    print("- '搜索最新的PyTorch教程'")
+    print("- '分析需求开发一个聊天机器人'")
     print()
     
     while True:
         try:
-            user_input = input("ð¤ æ¨: ").strip()
+            user_input = input("👤 您: ").strip()
             
-            if user_input.lower() in ['quit', 'exit', 'éåº', 'åè§']:
-                print("ð¤ æºå¨äºº: åè§ï¼æè°¢ä½¿ç¨ç®åçæ·±åº¦å­¦ä¹ ç¥ç»ç½ç»æºè½AIæºå¨äººã")
+            if user_input.lower() in ['quit', 'exit', '退出', '再见']:
+                print("🤖 机器人: 再见！感谢使用简化版深度学习神经网络智能AI机器人。")
                 break
             
             if not user_input:
                 continue
                 
-            # å¤çç¨æ·è¾å¥
+            # 处理用户输入
             response = ai_bot.chat(user_input)
             print(f"\n{response}")
             print()
@@ -704,7 +703,7 @@ def main():
             break
         except Exception as e:
             print(f"\n❌ 发生错误: {str(e)}")
-            print("è¯·éæ°è¾å¥æèç³»ææ¯æ¯æã")
+            print("请重新输入或联系技术支持。")
 
 
 if __name__ == "__main__":
